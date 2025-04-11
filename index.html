@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Advanced Monitoring System</title>
+  <link href="https://unpkg.com/tailwindcss@^2.2/dist/tailwind.min.css" rel="stylesheet"/>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      AOS.init({ duration: 1000, once: true });
+    });
+  </script>
+</head>
+<body class="bg-gradient-to-br from-gray-100 to-indigo-50 text-gray-800">
+
+  <!-- Header -->
+  <header class="bg-white shadow sticky top-0 z-50">
+    <div class="container mx-auto flex justify-between items-center py-4 px-6">
+      <a href="#" class="flex items-center space-x-2 text-indigo-600 hover:text-indigo-800">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 p-2 bg-indigo-100 rounded-full" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 12l10 5 10-5M2 17l10 5 10-5" />
+        </svg>
+        <span class="text-2xl font-bold">Advanced Monitoring System</span>
+      </a>
+      <nav class="space-x-4 text-gray-600 text-sm">
+        <a href="#" class="hover:text-indigo-600">Home</a>
+        <a href="#about" class="hover:text-indigo-600">About</a>
+        <a href="./Driver.html" class="hover:text-indigo-600">Driver</a>
+        <a href="./Map.html" class="hover:text-indigo-600">Map</a>
+        <a href="#faq" class="hover:text-indigo-600">FAQ</a>
+        <a href="#contact" class="hover:text-indigo-600">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Slider -->
+  <section x-data="{ current: 0, slides: ['Asserts/slide1.png', 'Asserts/slide2.png','Asserts/slide3.png'] }" x-init="setInterval(() => current = (current + 1) % slides.length, 4000)">
+    <div class="relative w-full h-96 overflow-hidden">
+      <template x-for="(slide, index) in slides" :key="index">
+        <div x-show="current === index" x-transition class="absolute inset-0">
+          <img :src="slide" alt="Slide" class="object-cover w-full h-full" />
+        </div>
+      </template>
+    </div>
+  </section>
+
+  <!-- Intro -->
+  <section class="py-16 bg-white text-center" data-aos="fade-up">
+    <div class="max-w-4xl mx-auto px-6">
+      <h2 class="text-4xl font-bold text-indigo-700 mb-4">Welcome to the Advanced Monitoring System</h2>
+      <p class="text-gray-600 text-lg">Our intelligent monitoring platform empowers smart cities with real-time surveillance, driver analysis, and geographic visualization. Join us in transforming public safety and efficiency through cutting-edge technology.</p>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="py-16 bg-gray-100">
+    <div class="max-w-5xl mx-auto px-6 text-center">
+      <h2 class="text-4xl font-bold text-indigo-700 mb-6">About the Advanced Monitoring System</h2>
+      <p class="text-lg text-gray-700 mb-8">The Advanced Monitoring System (AMS) is a government-backed initiative aimed at enhancing transportation safety through real-time surveillance, driver behavior analysis, and geographic data visualization.</p>
+      <div class="grid md:grid-cols-3 gap-8 text-left">
+        <div class="bg-white p-6 rounded-xl shadow hover:shadow-md transition" data-aos="fade-up">
+          <h3 class="text-xl font-semibold text-indigo-600 mb-2">Smart Surveillance</h3>
+          <img src="Asserts/surveillance.jpg" alt="Smart Surveillance" class="rounded-xl mb-4 w-full h-40 object-cover">
+          <p class="text-gray-600">AI-powered cameras monitor vehicles and detect anomalies for swift response.</p>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow hover:shadow-md transition" data-aos="fade-up" data-aos-delay="100">
+          <h3 class="text-xl font-semibold text-indigo-600 mb-2">Driver Monitoring</h3>
+          <img src="Asserts/driver.jpg" alt="Driver Monitoring" class="rounded-xl mb-4 w-full h-40 object-cover">
+          <p class="text-gray-600">Detects drowsiness, distraction, and potential alcohol influence in real time.</p>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow hover:shadow-md transition" data-aos="fade-up" data-aos-delay="200">
+          <h3 class="text-xl font-semibold text-indigo-600 mb-2">Real-Time Geo Mapping</h3>
+          <p class="text-gray-600 mb-4">Live vehicle tracking using integrated GPS mapping.</p>
+          <div class="w-full h-64 rounded overflow-hidden">
+            <div class="rounded-xl overflow-hidden shadow-lg">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14017.444593606326!2d77.2090219!3d28.6139391!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce2b014b8a19d%3A0xa3f6a6cfcbef2a78!2sNew%20Delhi%2C%20Delhi!5e0!3m2!1sen!2sin!4v1648234136407!5m2!1sen!2sin"
+                width="100%"
+                height="400"
+                style="border:0;"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+              </iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section id="faq" class="bg-indigo-50 py-16">
+    <div class="max-w-4xl mx-auto px-6">
+      <h3 class="text-3xl font-bold text-indigo-700 mb-8 text-center">Frequently Asked Questions</h3>
+      <div x-data="{ open: null }" class="space-y-4">
+        <template x-for="(faq, i) in [
+          {q: 'What is the purpose of this system?', a: 'It monitors buses in real-time and detects unsafe driver behavior.'},
+          {q: 'Is the data stored securely?', a: 'Yes, all data is encrypted and follows government protocols.'},
+          {q: 'Can I report issues directly?', a: 'Yes! Use the feedback form below or contact us directly.'}
+        ]" :key="i">
+          <div class="bg-white shadow rounded-lg p-4" @click="open === i ? open = null : open = i">
+            <h4 class="font-semibold cursor-pointer" x-text="faq.q"></h4>
+            <p x-show="open === i" x-transition class="text-gray-600 mt-2" x-text="faq.a"></p>
+          </div>
+        </template>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feedback Form -->
+  <footer class="bg-white border-t pt-10">
+    <div class="container mx-auto px-6 pb-10">
+      <div class="text-center mb-8">
+        <h3 class="text-3xl font-bold text-indigo-700 mb-2">We Value Your Feedback</h3>
+        <p class="text-gray-600">Let us know how we can improve and serve you better.</p>
+      </div>
+      <div class="max-w-2xl mx-auto bg-indigo-50 p-8 rounded-xl shadow-lg">
+        <form>
+          <div class="mb-4">
+            <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+            <input type="email" id="email" name="email" required class="w-full mt-1 border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"/>
+          </div>
+          <div class="mb-6">
+            <label for="message" class="block text-sm font-medium text-gray-700">Your Message</label>
+            <textarea id="message" name="message" rows="5" required class="w-full mt-1 border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none"></textarea>
+          </div>
+          <div class="text-center">
+            <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 transition">Submit Feedback</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="text-center text-gray-500 text-sm py-6 border-t mt-10">
+      &copy; 2024 Advanced Monitoring System — Government of India
+    </div>
+  </footer>
+
+  <!-- Contact Section -->
+  <section id="contact" class="py-16 bg-white text-center">
+    <div class="max-w-3xl mx-auto px-6">
+      <h3 class="text-3xl font-bold text-indigo-700 mb-4">Contact Us</h3>
+      <p class="text-gray-600 mb-6">Need support or want to collaborate? We’d love to hear from you.</p>
+      <div class="space-y-4 text-gray-700">
+        <p>📍 National Smart Mobility Center, New Delhi, India</p>
+        <p>📞 +91-12345-67890</p>
+        <p>📧 contact@ams.gov.in</p>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>

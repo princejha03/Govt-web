@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bus Route Map</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css" crossorigin="" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+
+  <!-- Custom Styles -->
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    header {
+      background-color: #2C3E50;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    footer {
+      background-color: #34495E;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+
+    #map {
+      height: calc(100vh - 140px);
+      width: 100%;
+    }
+
+    .controls {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+      background-color: white;
+      padding: 12px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .controls input {
+      padding: 6px;
+      margin-bottom: 8px;
+      width: 180px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 8px;
+      margin-top: 6px;
+      background-color: #3498DB;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .btn:hover {
+      background-color: #2980B9;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>City Bus Route Map</h1>
+    <p>Real-time Location & Route Viewer</p>
+  </header>
+
+  <div id="map"></div>
+
+  <div class="controls">
+    <input id="searchInput" type="text" placeholder="Enter Location / Stop" />
+    <button class="btn" onclick="searchLocation()">Search</button>
+    <button class="btn" onclick="locateUser()">Locate Me</button>
+    <button class="btn" onclick="toggleTraffic()">Toggle Traffic</button>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Bus Map | Smart Transit System</p>
+  </footer>
+
+  <!-- Leaflet Scripts -->
+  <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js" crossorigin=""></script>
+  <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  <script src="https://api.mapbox.com/mapbox.js/plugins/leaflet-traffic/v1.3.0/leaflet-traffic.min.js"></script>
+
+  <script>
+    const map = L.map('map').setView([28.6139, 77.2090], 13); // Default to Delhi
+
+    // Base map layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Geocoder
+    const geocoder = L.Control.geocoder().addTo(map);
+
+    // Routing control
+    const control = L.Routing.control({
+      router: L.Routing.osrmv1({
+        serviceUrl: 'https://router.project-osrm.org/route/v1'
+      }),
+      geocoder: L.Control.Geocoder.nominatim(),
+      routeWhileDragging: true,
+      show: false
+    }).addTo(map);
+
+    let marker, circle, zoomed = false;
+    let trafficLayer = null;
+
+    // Locate user
+    function locateUser() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(success, error);
+      } else {
+        alert("Geolocation not supported.");
+      }
+    }
+
+    function success(pos) {
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+      const accuracy = pos.coords.accuracy;
+
+      if (marker) map.removeLayer(marker);
+      if (circle) map.removeLayer(circle);
+
+      marker = L.marker([lat, lng]).addTo(map);
+      circle = L.circle([lat, lng], { radius: accuracy }).addTo(map);
+
+      if (!zoomed) {
+        map.fitBounds(circle.getBounds());
+        zoomed = true;
+      } else {
+        map.setView([lat, lng]);
+      }
+    }
+
+    function error(err) {
+      alert(err.code === 1 ? "Permission denied for location." : "Could not determine your location.");
+    }
+
+    // Search location
+    function searchLocation() {
+      const query = document.getElementById("searchInput").value;
+      if (!query) return alert("Please enter a location");
+
+      geocoder.geocode(query, function(results) {
+        if (results.length > 0) {
+          const result = results[0];
+          if (marker) map.removeLayer(marker);
+          marker = L.marker(result.center).addTo(map);
+          map.setView(result.center, 14);
+        } else {
+          alert("Location not found.");
+        }
+      });
+    }
+
+    // Toggle traffic layer
+    function toggleTraffic() {
+      if (!trafficLayer) {
+        trafficLayer = L.trafficLayer().addTo(map);
+      } else {
+        map.removeLayer(trafficLayer);
+        trafficLayer = null;
+      }
+    }
+  </script>
+
+</body>
+</html>

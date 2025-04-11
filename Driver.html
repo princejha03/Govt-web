@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bus Tracking & Driver Dashboard</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, #e0f7fa, #f1f8e9);
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 30px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+      width: 100%;
+      max-width: 300px;
+      border-radius: 10px;
+      border: 2px solid #ccc;
+      display: block;
+      margin: 0 auto 30px auto;
+    }
+
+    h1 {
+      text-align: center;
+      font-weight: 700;
+      color: #2c3e50;
+      margin-bottom: 30px;
+    }
+
+    #map {
+      height: 300px;
+      border-radius: 12px;
+      border: 2px solid #00acc1;
+      margin-bottom: 20px;
+    }
+
+    #video {
+      width: 100%;
+      height: 400px;
+      border: 2px solid #00acc1;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    .section {
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    span {
+      font-weight: 400;
+      color: #555;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      resize: none;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 20px;
+      background-color: #00acc1;
+      color: white;
+      font-weight: 600;
+      text-align: center;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-top: 10px;
+    }
+
+    .btn:hover {
+      background-color: #008ba3;
+    }
+
+    .btn.secondary {
+      background-color: #43a047;
+    }
+
+    .btn.secondary:hover {
+      background-color: #388e3c;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Local Image -->
+    <img src="Drowsiness_Detection/latest_alert.jpg" alt="Drowsiness Alert" class="logo" />
+
+    <h1>Bus Tracking & Driver Dashboard</h1>
+
+    <!-- Map Section -->
+    <div id="map"></div>
+    <button class="btn" onclick="locateUser()">📍 Locate Me</button>
+
+    <!-- Video Stream -->
+    <iframe id="video" src="http://192.168.123.155:4747/" frameborder="0" allowfullscreen></iframe>
+
+    <!-- Alcohol Sensor -->
+    <div class="section">
+      <button class="btn secondary" onclick="window.location.href='http://192.168.123.63'">🍺 View Alcohol Data</button>
+    </div>
+    <!-- Driver Info -->
+    <div class="section">
+      <label>👤 Driver Name:</label>
+      <span id="driverNameValue">John Doe</span>
+    </div>
+
+    <div class="section">
+      <label>🚌 Bus Route:</label>
+      <span id="busRouteValue">Route 101</span>
+    </div>
+
+    <div class="section">
+      <label>🚗 Current Speed (km/h):</label>
+      <span id="currentSpeedValue">0</span>
+    </div>
+
+    <!-- Feedback -->
+    <div class="section">
+      <label>💬 Feedback:</label>
+      <textarea id="feedback" placeholder="Enter your feedback here..."></textarea>
+      <button class="btn" onclick="submitFeedback()">Submit Feedback</button>
+    </div>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+  <script>
+    // Initialize Map
+    var map = L.map('map').setView([51.505, -0.09], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: 'Map data © OpenStreetMap contributors'
+    }).addTo(map);
+
+    var marker = L.marker([51.505, -0.09]).addTo(map);
+
+    function locateUser() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(success, error);
+      } else {
+        alert("Geolocation not supported.");
+      }
+    }
+
+    function success(pos) {
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+      const accuracy = pos.coords.accuracy;
+
+      if (marker) map.removeLayer(marker);
+      marker = L.marker([lat, lng]).addTo(map);
+
+      const circle = L.circle([lat, lng], { radius: accuracy }).addTo(map);
+      map.setView([lat, lng], 13);
+    }
+
+    function error(err) {
+      if (err.code === 1) {
+        alert("Please allow geolocation access.");
+      } else {
+        alert("Unable to get location.");
+      }
+    }
+
+    function submitFeedback() {
+      const feedback = document.getElementById('feedback').value;
+      console.log("Feedback submitted:", feedback);
+      alert("Thank you for your feedback!");
+    }
+  </script>
+
+</body>
+</html>
